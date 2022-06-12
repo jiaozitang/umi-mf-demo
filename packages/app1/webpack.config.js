@@ -2,6 +2,8 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
+const {ModuleFederationPlugin} = require('webpack').container
+
 module.exports = {
     mode: 'development',
     entry: './src/index.js',
@@ -13,6 +15,22 @@ module.exports = {
         new CleanWebpackPlugin(),
         new HtmlWebpackPlugin({
             title: 'test'
+        }),
+        new ModuleFederationPlugin({
+            name: 'app1',
+            filename: 'remoteEntry.js',
+            exposes: {
+                './Home': './src/..'
+            },
+            shared: [{
+                'react': {
+                    eager: true
+                }, 
+            }, {
+                'react-dom': {
+                    eager: true
+                }
+            }]
         })
     ],
     devServer: {
